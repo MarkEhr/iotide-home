@@ -1,21 +1,7 @@
 {
-  "name": "tide-nodejs-skeleton",
+  "name": "iotide",
   "version": "1.0.0",
-  "description": "Resources bidirectional synchronization between a client and a server",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
-  },
-  "author": "tide.mx",
-  "dependencies": {
-    "dotenv": "^16.0.2",
-    "express": "^4.18.1",
-    "http-status": "^1.5.3",
-    "morgan": "^1.10.0",
-    "winston": "^3.8.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.19"
-  }
+  "main": "server/src/index.js",
+  "author": "Mark <mark@tide.mx>",
+  "license": "MIT"
 }

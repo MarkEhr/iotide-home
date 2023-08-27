@@ -1,11 +1,24 @@
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
+const { initDatabase } = require('./db');
+const {startWebsocketServer} = require("./websocket/wsServer");
 
-// ------ Http server set up -------
-const server = app.listen(config.port, () => {
-    logger.info(`Listening to port ${config.port}`);
-});
+// ------ Main function -------
+(async function() {
+
+    //Database
+    await initDatabase();
+
+    // ------ Http server set up -------
+    const server = app.listen(config.port, () => {
+        logger.info(`Listening to port ${config.port}`);
+    });
+
+    // ------ Ws server set up -------
+    startWebsocketServer(server);
+
+})();
 
 // ------ General node process handlers  -------
 const exitHandler = () => {

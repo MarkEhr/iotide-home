@@ -1,13 +1,22 @@
 const express = require('express');
 const healthRoutes = require('./healthRoutes');
-const config = require('../config/config');
+const securityRoutes = require('./securityRoutes');
+const deviceRoutes = require('./deviceRoutes');
 
 const router = express.Router();
 
 const routes = [
     {
+        path: '/',
+        router: securityRoutes,
+    },
+    {
         path: '/health',
         router: healthRoutes,
+    },
+    {
+        path: '/devices',
+        router: deviceRoutes,
     }
 ];
 
