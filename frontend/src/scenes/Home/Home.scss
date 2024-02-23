@@ -1,0 +1,18 @@
+.Home{
+  .devices-container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 40px 0;
+    //padding: 20px;
+    @media screen and (min-width: 640px){
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .DeviceCard{
+      flex: 1;
+    }
+
+  }
+}

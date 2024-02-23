@@ -1,0 +1,36 @@
+.BlurBall{
+  $ball-size: 180px;
+
+  .ball-container {
+    margin: auto;
+    width: $ball-size;
+    position: relative;
+    z-index: 0;
+
+    .ball {
+      width: $ball-size;
+      height: $ball-size;
+      border-radius: 50%;
+      background: #ff6160;
+      position: relative;
+      top: 1px;
+      transition: top 2s ease-in-out;
+    }
+
+    .ball-blur {
+      width: 200%;
+      height: 200%;
+      top: 50%;
+      left: -50%;
+      backdrop-filter: blur(20px);
+      position: absolute;
+    }
+  }
+
+  &.full-blur{
+    .ball-container .ball{
+      top: $ball-size/2;
+    }
+  }
+
+}
