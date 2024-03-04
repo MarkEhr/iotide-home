@@ -1,0 +1,15 @@
+@import "colors";
+
+html,body{
+  font-family: Montserrat-medium, sans-serif;
+  font-size: 14px;
+}
+
+b, strong{
+  font-family: Montserrat-semibold, sans-serif;
+  font-weight: 600;
+}
+
+.App{
+  color: $text-color;
+}

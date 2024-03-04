@@ -29,7 +29,7 @@
 
   &.full-blur{
     .ball-container .ball{
-      top: $ball-size/2;
+      top: calc($ball-size/2);
     }
   }
 

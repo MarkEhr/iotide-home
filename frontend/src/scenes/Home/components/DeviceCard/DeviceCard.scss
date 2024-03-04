@@ -7,12 +7,22 @@
   padding: 10px;
   min-width: 240px;
   max-width: 600px;
+  border: 1px solid #40508c;
+  display: flex;
+  justify-content: space-between;
 
 
   .name{
     font-size: 1.2rem;
     margin: 0  0 10px;
-    text-align: center;
+  }
+
+  .type-widget{
+    display: flex;
+  }
+
+  .circ-container{
+    width: 80px;
   }
 
   .status-circle{
@@ -35,6 +45,28 @@
       animation: deviceCircleAnimation 3s infinite alternate;
     }
 
+  }
+
+  .water-meter{
+    border: 1px solid blue;
+    width: 28px;
+    position: relative;
+    .percentage{
+      color: gray;
+      font-size: 0.8em;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      margin: 0;
+    }
+    .water-bar{
+      background: aquamarine;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+    }
   }
 
 }

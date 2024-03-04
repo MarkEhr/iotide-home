@@ -30,7 +30,15 @@ Device.init({
         validate: {
             notEmpty: true
         }
-    }
+    },
+    // Device type
+    type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
+    },
 }, {
     sequelize,
     modelName: 'Device',

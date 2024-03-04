@@ -17,6 +17,11 @@ const startWebsocketServer = ( app ) => {
 
     //Handle ws connection with express app
     app.on("upgrade", (request, socket, head) => {
+
+        if(request.url !== '/ws') {
+            return;
+        }
+
         wsServer.handleUpgrade(request, socket, head, (websocket) => {
             wsServer.emit("connection", websocket, request);
         });
@@ -25,13 +30,17 @@ const startWebsocketServer = ( app ) => {
     //Handle ws connection
     wsServer.on( "connection", connectionHandler);
 
+    //Handle ws server errors
+    wsServer.on('error', (error) => {
+        logger.error('WebSocket server error:', error);
+    });
+
     return wsServer;
 
 }
 
 const connectionHandler = async (wsConnection, connectionRequest) => {
 
-    logger.info("New connection initiated by " + connectionRequest.socket.remoteAddress);
     // ----- Monitor the connection status -----
 
     let isAlive = true;
@@ -82,7 +91,7 @@ const connectionHandler = async (wsConnection, connectionRequest) => {
         deviceManager.addDevice(deviceId, wsConnection);
 
         wsConnection.on("message", (message) => {
-            console.log("Message received: " + message.toString());
+            logger.info("Message received: " + message.toString());
             wsConnection.send(JSON.stringify({message: 'Message received.'}));
         });
 

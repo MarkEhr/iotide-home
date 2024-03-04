@@ -47,6 +47,9 @@ app.use(express.urlencoded({ extended: true }));
 // v1 api routes
 app.use('/api/v1', routes);
 
+// ------ Ws server set up -------
+//startWebsocketServer(app);
+
 // serve frontend
 const frontPath = path.join( config.projectRoot, 'frontend/build');
 app.use(express.static( frontPath ));

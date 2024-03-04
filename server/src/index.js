@@ -2,8 +2,10 @@ const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
 const { initDatabase } = require('./db');
-const {startWebsocketServer} = require("./websocket/wsServer");
+const deviceWsServer = require("./websocket/deviceWsServer");
+const controlWsServer = require("./websocket/controlWsServer");
 
+let server;
 // ------ Main function -------
 (async function() {
 
@@ -11,12 +13,17 @@ const {startWebsocketServer} = require("./websocket/wsServer");
     await initDatabase();
 
     // ------ Http server set up -------
-    const server = app.listen(config.port, () => {
+    server = app.listen(config.port, () => {
         logger.info(`Listening to port ${config.port}`);
     });
 
     // ------ Ws server set up -------
-    startWebsocketServer(server);
+    deviceWsServer.startWebsocketServer(server);
+    controlWsServer.startWebsocketServer(server);
+
+    server.on('connection', (socket) => {
+        logger.info('Connection event triggered by ' + socket.remoteAddress);
+    });
 
 })();
 

@@ -27,7 +27,18 @@ const DeviceCard = ({ device }) => {
             <p className='name'>
                 {device.name}
             </p>
-            <div className={classNames('status-circle', getCircleClass())} />
+
+            <div className='type-widget'>
+                {device.type === 'waterv1'&&
+                <div className='water-meter'>
+                    <p className='percentage'>78%</p>
+                    <div className={'water-bar'}/>
+                </div>}
+
+                <div className='circ-container'>
+                    <div className={classNames('status-circle', getCircleClass())} />
+                </div>
+            </div>
         </div>
     );
 };
