@@ -20,7 +20,7 @@ const Home = () => {
             <p>Hola, {me.name}.</p>
             <div className={"devices-container"}>
 
-                {devices?.map(device => <DeviceCard device={device} key={device.id+Math.random()}/>)}
+                {devices?.map(device => <DeviceCard device={device} key={device.deviceId}/>)}
 
             </div>
         </div>
