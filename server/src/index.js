@@ -21,9 +21,9 @@ let server;
     deviceWsServer.startWebsocketServer(server);
     controlWsServer.startWebsocketServer(server);
 
-    server.on('connection', (socket) => {
-        logger.info('Connection event triggered by ' + socket.remoteAddress);
-    });
+    //server.on('connection', (socket) => {
+    //    logger.info('Connection event triggered by ' + socket.remoteAddress);
+    //});
 
 })();
 

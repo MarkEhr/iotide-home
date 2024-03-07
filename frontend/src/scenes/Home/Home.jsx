@@ -3,6 +3,7 @@ import './Home.scss';
 import {useSelector} from "react-redux";
 import {ApiContext} from "../../services/api/api-config";
 import DeviceCard from "./components/DeviceCard/DeviceCard";
+import { io } from "socket.io-client";
 
 const Home = () => {
 
@@ -12,6 +13,17 @@ const Home = () => {
 
     useEffect(() => {
         api.devices.get();
+
+        const socket = io("http://localhost:4000", {
+            path: "/ws-control/"
+        });
+
+        socket.on("connect", () => {
+            console.log("Connected to ws server");
+            socket.emit("auth",{"token": api.token})
+        });
+
+
     }, [api]);
 
     return (
