@@ -51,6 +51,10 @@ app.use('/api/v1', routes);
 //startWebsocketServer(app);
 
 // serve frontend
+const firmwaresPath = path.join( config.projectRoot, 'firmwares');
+app.use("/update", express.static( firmwaresPath ));
+
+// serve frontend
 const frontPath = path.join( config.projectRoot, 'frontend/build');
 app.use(express.static( frontPath ));
 // Single page application fallback

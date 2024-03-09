@@ -92,6 +92,7 @@ const connectionHandler = async (wsConnection, connectionRequest) => {
 
         wsConnection.on("message", (message) => {
             logger.info("Message received: " + message.toString());
+            
             wsConnection.send(JSON.stringify({message: 'Message received.'}));
         });
 

@@ -22,8 +22,15 @@ const DeviceCard = ({ device }) => {
         setRunning(!running);
     }
 
+    const handleUpdateClick = ()=>{
+        api.devices.command({ method: 'POST', params: { deviceId: device.deviceId, command:'{"update":"firmware.bin"}' }, customProp: 'command' })
+            .catch(console.error);
+        setTimeout(()=>setRunning(false), 5000);
+        setRunning(!running);
+    }
+
     return (
-        <div className={"DeviceCard"} onClick={handleClick}>
+        <div className={"DeviceCard"}>
             <p className='name'>
                 {device.name}
             </p>
@@ -35,7 +42,10 @@ const DeviceCard = ({ device }) => {
                     <div className={'water-bar'}/>
                 </div>}
 
-                <div className='circ-container'>
+                <div className='circ-container' onClick={handleClick}>
+                    <div className={classNames('status-circle', getCircleClass())} />
+                </div>
+                <div className='circ-container' onClick={handleUpdateClick}>
                     <div className={classNames('status-circle', getCircleClass())} />
                 </div>
             </div>
