@@ -1,82 +1,62 @@
 /**
  * controlWsServer.js
- * Main websocket server
+ * Websocket server for the frontend app to control the devices
  */
-const WebSocket = require('ws');
+const socketIo = require('socket.io');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
 const logger = require('../config/logger');
 
-const startWebsocketServer = ( app ) => {
+const startWebsocketServer = ( httpServer ) => {
 
     //Create ws server
-    const wsServer = new WebSocket.Server({
-        noServer: true,
-        path: '/ws-control',
-    });
-
-    //Handle ws connection with express app
-    app.on("upgrade", (request, socket, head) => {
-
-        if(request.url !== '/ws-control') {
-            return;
+    const io = socketIo(httpServer, {
+        path: '/ws-control/',
+        serveClient: false,
+        cookie: false,
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"],
+            credentials: true
         }
-
-        wsServer.handleUpgrade(request, socket, head, (websocket) => {
-            wsServer.emit("connection", websocket, request);
-        });
     });
 
-    //Handle ws connection
-    wsServer.on( "connection", connectionHandler);
+    // Socket.IO connection handler
+    io.on('connection', connectionHandler);
 
-    //Handle ws server errors
-    wsServer.on('error', (error) => {
-        logger.error('WebSocket server error:', error);
-    });
-
-    return wsServer;
+    return io;
 
 }
 
-const connectionHandler = async (wsConnection) => {
+const connectionHandler = async (socket) => {
+    console.log('ws-control client connected');
 
-    // ----- Monitor the connection status -----
+    const authTimeout = setTimeout(() => {
+        logger.warn('Client did not authenticate in time, disconnecting');
+        socket.disconnect();
+    }, 5000);
 
-    let isAlive = true;
-    wsConnection.on('pong', () => {
-        isAlive = true;
+
+    // Handle a custom event from the client
+    socket.on('auth', (data) => {
+
+        clearTimeout(authTimeout);
+        jwt.verify(data.token, config.jwtSecret, (err, decoded) => {
+            if (err) {
+                logger.warn('Invalid token');
+                socket.disconnect();
+            } else {
+                logger.info('Client authenticated: ' + JSON.stringify(decoded));
+            }
+        });
+
     });
-    // Regularly check the connection
-    const interval = setInterval(() => {
-        if (isAlive === false) {
-            clearInterval(interval);
-            wsConnection.terminate();  // Close connection if not alive
-            return;
-        }
-        isAlive = false;
-        wsConnection.ping(() => {});  // Send a ping frame
-    }, 10000);
 
-
-    // ----- Handle the authentication -----
-
-    try {
-
-        // ----- Register with the device manager -----
-
-        logger.info('New ws control connection');
-
-        wsConnection.on("message", (message) => {
-            logger.info("Control message received: " + message.toString());
-            wsConnection.send(JSON.stringify({message: 'Message received.'}));
-        });
-
-        wsConnection.on("close", () => {
-            logger.info('Control connection closed');
-        });
-    } catch (error) {
-        logger.error("Error during WebSocket authentication:", error);
-        wsConnection.close(1011, "Internal server error");
-    }
+    // Disconnect event
+    socket.on('disconnect', () => {
+        console.log('User disconnected');
+        clearTimeout(authTimeout);
+    });
 
 }
 
