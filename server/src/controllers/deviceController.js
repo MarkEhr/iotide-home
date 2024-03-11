@@ -40,7 +40,7 @@ const sendCommand = catchAsync(async (req, res) => {
 const updateDevice = catchAsync(async (req, res) => {
     const currentVersion = req.headers['x-esp8266-version'];
     if(currentVersion) {
-        //Handle finding if this is a newer version and send if yes.
+        //todo handle finding if there is a newer version and send if yes.
         //200+firmware.bin if update is necessary, 304 for not necessary
         res.status(304).send();
         return;
@@ -48,7 +48,7 @@ const updateDevice = catchAsync(async (req, res) => {
 
     const requestedVersion = req.params.versionReq;
     if(requestedVersion) {
-        // todo error handling
+        // todo error handling -> if !exists send 400
         const filePath = path.join(__dirname, '..', '..', '..', 'firmwares', requestedVersion);
         res.status(200).sendFile(filePath);
     }
