@@ -3,6 +3,8 @@ const deviceManager = require('../services/deviceManager'); // Path to your Devi
 
 const catchAsync = require("../utils/catchAsync");
 
+const path = require('path');
+
 const listDevices = catchAsync(async (req, res) => {
     const devices = await Device.findAll();
 
@@ -35,10 +37,27 @@ const sendCommand = catchAsync(async (req, res) => {
     res.json({data: { success: true }});
 });
 
+const updateDevice = catchAsync(async (req, res) => {
+    const currentVersion = req.headers['x-esp8266-version'];
+    if(currentVersion) {
+        //Handle finding if this is a newer version and send if yes.
+        //200+firmware.bin if update is necessary, 304 for not necessary
+        res.status(304).send();
+        return;
+    }
 
+    const requestedVersion = req.params.versionReq;
+    if(requestedVersion) {
+        // todo error handling
+        const filePath = path.join(__dirname, '..', '..', '..', 'firmwares', requestedVersion);
+        res.status(200).sendFile(filePath);
+    }
+    return;
+});
 
 module.exports = {
     // ... other exports,
     listDevices,
     sendCommand,
+    updateDevice
 };

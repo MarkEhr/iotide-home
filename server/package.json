@@ -19,6 +19,7 @@
     "mysql2": "^3.6.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
+    "passport-headerapikey": "^1.2.2",
     "sequelize": "^6.32.1",
     "socket.io": "^4.7.4",
     "winston": "^3.8.2",
