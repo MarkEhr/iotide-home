@@ -18,8 +18,8 @@ let server;
     });
 
     // ------ Ws server set up -------
-    deviceWsServer.startWebsocketServer(server);
-    controlWsServer.startWebsocketServer(server);
+    let cWsS = controlWsServer.startWebsocketServer(server);
+    deviceWsServer.startWebsocketServer(server, cWsS);
 
     //server.on('connection', (socket) => {
     //    logger.info('Connection event triggered by ' + socket.remoteAddress);

@@ -7,7 +7,7 @@ const deviceManager = require('../services/deviceManager');
 const logger = require('../config/logger');
 const Device = require("../models/Device");
 
-const startWebsocketServer = ( app ) => {
+const startWebsocketServer = ( app , controlWsServer) => {
 
     //Create ws server
     const wsServer = new WebSocket.Server({
@@ -28,7 +28,7 @@ const startWebsocketServer = ( app ) => {
     });
 
     //Handle ws connection
-    wsServer.on( "connection", connectionHandler);
+    wsServer.on( "connection", (wsConnection, connectionRequest) => connectionHandler(wsConnection, connectionRequest, controlWsServer));
 
     //Handle ws server errors
     wsServer.on('error', (error) => {
@@ -39,7 +39,7 @@ const startWebsocketServer = ( app ) => {
 
 }
 
-const connectionHandler = async (wsConnection, connectionRequest) => {
+const connectionHandler = async (wsConnection, connectionRequest, controlWsServer) => {
 
     // ----- Monitor the connection status -----
 
@@ -91,8 +91,18 @@ const connectionHandler = async (wsConnection, connectionRequest) => {
         deviceManager.addDevice(deviceId, wsConnection);
 
         wsConnection.on("message", (message) => {
-            logger.info("Message received: " + message.toString());
-            
+            logger.info(`Message received from ${deviceId}: ${message}`);
+
+            // Parse the message into a JSON object
+            const parsedMessage = JSON.parse(message);
+
+            // Create a new object that includes the deviceId and the parsed message
+            const broadcastMessage = {
+                deviceId: deviceId,
+                message: parsedMessage
+            };
+
+            controlWsServer.to(deviceId).emit('message', broadcastMessage);
             wsConnection.send(JSON.stringify({message: 'Message received.'}));
         });
 

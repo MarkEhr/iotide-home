@@ -1,13 +1,17 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import './DeviceCard.scss';
 import classNames from "classnames";
 import {ApiContext} from "../../../../services/api/api-config";
 
-const DeviceCard = ({ device }) => {
+const DeviceCard = ({ device, socket }) => {
 
     const api = useContext(ApiContext);
 
     const [running, setRunning] = useState(false);
+
+    const [streaming, setStreaming] = useState(false);
+
+    const [percentage, setPercentage] = useState(50);
 
     const getCircleClass = ()=>{
         if(running)
@@ -29,6 +33,32 @@ const DeviceCard = ({ device }) => {
         setRunning(!running);
     }
 
+    const handleStreamClick = ()=>{
+        if (socket) {
+            if(streaming) {
+                socket.emit('stream', { deviceId: device.deviceId });
+            } else {
+                socket.emit('stream', { deviceId: device.deviceId });
+            }
+            setStreaming(streaming=>!streaming);
+        }
+    }
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('message',  (data) => {
+                if(data.deviceId !== device.deviceId)
+                    return;
+                setPercentage(data.message.humidity);
+            });
+        }
+        return () => {
+            if (socket) {
+                socket.off('message');
+            }
+        };
+    }, [socket, device.deviceId]);
+
     return (
         <div className={"DeviceCard"}>
             <p className='name'>
@@ -38,15 +68,21 @@ const DeviceCard = ({ device }) => {
             <div className='type-widget'>
                 {device.type === 'waterv1'&&
                 <div className='water-meter'>
-                    <p className='percentage'>78%</p>
-                    <div className={'water-bar'}/>
+                    <p className='percentage'>{percentage}%</p>
+                    <div className='water-bar' style={{ height: `${percentage}%` }}/>
                 </div>}
 
                 <div className='circ-container' onClick={handleClick}>
                     <div className={classNames('status-circle', getCircleClass())} />
+                    <p className='button-label'>Send ON</p>
                 </div>
                 <div className='circ-container' onClick={handleUpdateClick}>
                     <div className={classNames('status-circle', getCircleClass())} />
+                    <p className='button-label'>Update</p>
+                </div>
+                <div className='circ-container' onClick={handleStreamClick}>
+                    <div className={classNames('status-circle', getCircleClass())} />
+                    <p className='button-label'>Stream</p>
                 </div>
             </div>
         </div>

@@ -25,7 +25,6 @@ const startWebsocketServer = ( httpServer ) => {
     io.on('connection', connectionHandler);
 
     return io;
-
 }
 
 const connectionHandler = async (socket) => {
@@ -52,6 +51,22 @@ const connectionHandler = async (socket) => {
 
     });
 
+    // Stream request event
+    socket.on('stream', (data) => {
+        if (!data.deviceId) {
+            logger.error('DeviceId not provided in stream request!');
+            return;
+        }
+
+        if(socket.adapter.rooms.get(data.deviceId)?.has(socket.id)) {
+            logger.info('Frontend leaving room for device: ' + data.deviceId);
+            socket.leave(data.deviceId);
+        } else {
+            logger.info('Frontend joining room for device: ' + data.deviceId);
+            socket.join(data.deviceId);
+        }
+    });
+
     // Disconnect event
     socket.on('disconnect', () => {
         console.log('User disconnected');
@@ -61,5 +76,5 @@ const connectionHandler = async (socket) => {
 }
 
 module.exports = {
-    startWebsocketServer,
+    startWebsocketServer
 };

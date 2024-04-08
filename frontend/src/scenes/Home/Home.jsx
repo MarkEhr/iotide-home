@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import './Home.scss';
 import {useSelector} from "react-redux";
 import {ApiContext} from "../../services/api/api-config";
@@ -10,6 +10,8 @@ const Home = () => {
     const api = useContext(ApiContext);
 
     const {me, devices} = useSelector(s => s.api);
+
+    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         api.devices.get();
@@ -23,7 +25,7 @@ const Home = () => {
             socket.emit("auth",{"token": api.token})
         });
 
-
+        setSocket(socket);
     }, [api]);
 
     return (
@@ -32,7 +34,7 @@ const Home = () => {
             <p>Hola, {me.name}.</p>
             <div className={"devices-container"}>
 
-                {devices?.map(device => <DeviceCard device={device} key={device.deviceId}/>)}
+                {devices?.map(device => <DeviceCard device={device} key={device.deviceId} socket={socket} />)}
 
             </div>
         </div>
