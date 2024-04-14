@@ -1,12 +1,17 @@
 const sequelize = require('./sequelize');
 const Device = require('../models/Device');
+const Event = require('../models/Event');
+const User = require('../models/User');
+const associations = require('../models/associations');
 const logger = require("../config/logger"); // Update the path accordingly
 
 const db = {
     sequelize,
     Sequelize: sequelize.Sequelize,
     models: {
-        Device
+        Device,
+        User,
+        Event
     }
 };
 

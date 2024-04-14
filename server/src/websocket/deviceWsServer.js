@@ -6,6 +6,7 @@ const WebSocket = require('ws');
 const deviceManager = require('../services/deviceManager');
 const logger = require('../config/logger');
 const Device = require("../models/Device");
+const Event = require("../models/Event");
 
 const startWebsocketServer = ( app , controlWsServer) => {
 
@@ -93,8 +94,56 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
         wsConnection.on("message", (message) => {
             logger.info(`Message received from ${deviceId}: ${message}`);
 
-            // Parse the message into a JSON object
-            const parsedMessage = JSON.parse(message);
+            // assuming event with the format 
+            // {
+            //     type: 'event',
+            //     data: { 
+            //             type: 'temperature', 
+            //             time: '2021-07-01T12:00:00Z', 
+            //             data: '10' 
+            //            }
+            // }
+
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(message);
+            } catch (error) {
+                logger.error('Invalid JSON format');
+                wsConnection.send(JSON.stringify({ error: 'Invalid JSON format' }));
+                return;
+            }
+
+            if (!parsedMessage.hasOwnProperty('type')) {
+                logger.error('Message does not have a type field');
+                wsConnection.send(JSON.stringify({ error: 'Message does not have a type field' }));
+                return;
+            }
+
+            switch (parsedMessage.type) {
+                case 'event':
+                    if (!parsedMessage.hasOwnProperty('data')) {
+                        logger.error('Event message is missing required fields');
+                        wsConnection.send(JSON.stringify({ error: 'Event message is missing required fields' }));
+                        return;
+                    }
+                    if (!parsedMessage.data.hasOwnProperty('type') || !parsedMessage.data.hasOwnProperty('time') || !parsedMessage.data.hasOwnProperty('data')) {
+                        logger.error('Event message is missing required fields');
+                        wsConnection.send(JSON.stringify({ error: 'Event message is missing required fields' }));
+                        return;
+                    }
+                    Event.create({
+                        deviceId: deviceId,
+                        type: parsedMessage.data.type,
+                        time: parsedMessage.data.time,
+                        data: parsedMessage.data.data
+                    });              
+                    logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);      
+                    break;
+                default:
+                    logger.error('Unknown message type:', parsedMessage.type);
+                    wsConnection.send(JSON.stringify({ error: 'Unknown message type' }));
+                    return;
+            }
 
             // Create a new object that includes the deviceId and the parsed message
             const broadcastMessage = {
