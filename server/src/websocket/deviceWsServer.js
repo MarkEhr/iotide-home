@@ -55,7 +55,7 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
             return;
         }
         isAlive = false;
-        wsConnection.ping(() => {});  // Send a ping frame
+        wsConnection.ping();  // Send a ping frame
     }, 10000);
 
 
@@ -94,7 +94,13 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
             logger.info(`Message received from ${deviceId}: ${message}`);
 
             // Parse the message into a JSON object
-            const parsedMessage = JSON.parse(message);
+            let parsedMessage;
+            try {
+                parsedMessage = JSON.parse(message);
+            } catch (error) {
+                logger.error("Error parsing ws message as JSON:", error);
+                parsedMessage = message;
+            }
 
             // Create a new object that includes the deviceId and the parsed message
             const broadcastMessage = {
@@ -103,7 +109,6 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
             };
 
             controlWsServer.to(deviceId).emit('message', broadcastMessage);
-            wsConnection.send(JSON.stringify({message: 'Message received.'}));
         });
 
         wsConnection.on("close", () => {
