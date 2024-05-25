@@ -15,6 +15,7 @@ import notLoggedRoutes from "./services/routes/notLoggedRoutes";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import TideToaster from "./components/TideToaster/TideToaster";
 import {notifierRef} from "./services/notifier";
+import {ConfigProvider, theme} from "antd";
 
 const api = new Api({...apiConfig, reduxStore: store});
 
@@ -42,21 +43,24 @@ function App() {
         <div className="App">
             <TideToaster ref={notifierRef}/>
             <SecurityContext.Provider value={securityManager}>
-                <ApiContext.Provider value={api} >
-                    <ErrorBoundary>
-                        <Router>
-                            {splash ?
-                                <Splash/>
-                                :
-                                <Routes>
-                                    {routes.map(({path, exact, Component}) =>
-                                        <Route key={path} path={path} element={<Component />} exact={ exact !== false}/>
-                                    )}
-                                    <Route path="*" element={<Navigate replace to={routes[0].path} />} />
-                                </Routes>
-                            }
-                        </Router>
-                    </ErrorBoundary>
+                <ApiContext.Provider value={api}>
+                    <ConfigProvider theme={{algorithm: theme.darkAlgorithm}}>
+                        <ErrorBoundary>
+                            <Router>
+                                {splash ?
+                                    <Splash/>
+                                    :
+                                    <Routes>
+                                        {routes.map(({path, exact, Component}) =>
+                                            <Route key={path} path={path} element={<Component/>}
+                                                   exact={exact !== false}/>
+                                        )}
+                                        <Route path="*" element={<Navigate replace to={routes[0].path}/>}/>
+                                    </Routes>
+                                }
+                            </Router>
+                        </ErrorBoundary>
+                    </ConfigProvider>
                 </ApiContext.Provider>
             </SecurityContext.Provider>
         </div>

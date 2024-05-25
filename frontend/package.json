@@ -1,9 +1,12 @@
 {
-  "name": "app-name",
+  "name": "iotide-home",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
+    "@ant-design/charts": "^2.1.1",
+    "@ant-design/icons": "^5.3.7",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "antd": "^5.17.3",
     "classnames": "^2.2.6",
     "device-detector-js": "^3.0.3",
     "lodash": "^4.17.21",
