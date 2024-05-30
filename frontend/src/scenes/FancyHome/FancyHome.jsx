@@ -5,7 +5,7 @@ import { LaptopOutlined, NotificationOutlined, UserOutlined, CaretRightOutlined 
 import { Liquid } from '@ant-design/charts';
 
 const { Header, Content, Sider } = Layout;
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const sidebarItems = [{
     key: `key1`,
@@ -104,7 +104,7 @@ const FancyHome = () => {
                         <Text style={{fontSize: '5vmin'}}>IoTide Home</Text>
                     </div>
                     <div className={"header-container"}>
-                        <Text style={{fontSize: '2vmin'}}>M Ehrlich</Text>
+                        <Text style={{fontSize: '2.5vmin'}}>M Ehrlich</Text>
                         <Badge count={badgeCount}>
                             <Avatar icon={<UserOutlined />} onClick={handleAvatarClick}/>
                         </Badge>
@@ -113,63 +113,40 @@ const FancyHome = () => {
                 <Layout>
                     <Sider
                         collapsible
-                        collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
+                        collapsed={collapsed}
+                        onCollapse={(value) => setCollapsed(value)}
                         width={200}
                     >
                         <Menu
                             mode="inline"
                             defaultSelectedKeys={['1']}
                             defaultOpenKeys={['key1']}
-                            style={{
-                                height: '100%',
-                                borderRight: 0,
-                            }}
+                            className={"menu"}
                             items={sidebarItems}
                         />
                     </Sider>
-                    <Layout
-                        style={{
-                            padding: '0 24px 24px',
-                        }}
-                    >
-                        <Breadcrumb
-                            style={{
-                                margin: '16px 0',
-                            }}
-                        >
+                    <Layout>
+                        <Breadcrumb className={"breadcrumb"}>
                             <Breadcrumb.Item>Casa Anáhuac</Breadcrumb.Item>
                             <Breadcrumb.Item>M Ehrlich</Breadcrumb.Item>
                             <Breadcrumb.Item>Dispositivos</Breadcrumb.Item>
                         </Breadcrumb>
-                        <Content
-                            style={{
-                                padding: 20,
-                                margin: 0,
-                                minHeight: 280,
-                                borderRadius: token.borderRadiusLG,
-                            }}
-                        >
+                        <Content className={"main-content"}>
                             <Card
                                 title="Water Meter - Begonia Maculata"
                                 extra={<div>More</div>}
-                                style={{
-                                    width: '50vp',
-                                }}
                             >
-                                <div style={{display: "flex", height: 200, alignItems: "center", justifyContent: "space-between"}}>
-                                    <p style={{display: "flex", height: "auto"}}>Card content</p>
-
+                                <div className={"card-content"}>
+                                    <p>Card content</p>
                                     <Liquid {...configLiquid} />
                                 </div>
                             </Card>
-                            <div style={{height: 30}}/>
                             <Collapse
                                 bordered={false}
                                 defaultActiveKey={['collapse1']}
                                 expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
-                                style={{
-                                    background: token.colorBgLayout,
-                                }}
+                                className={"collapse"}
+                                style={{background:token.colorBgLayout}}
                                 items={getItems(panelStyle, <Liquid {...configLiquid} />)}
                             />
                         </Content>

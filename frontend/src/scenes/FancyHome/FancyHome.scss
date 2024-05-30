@@ -15,4 +15,27 @@
       gap: 20px;
     }
   }
+
+  .menu {
+    height: 100%;
+  }
+
+  .breadcrumb {
+    margin: 10px 20px;
+  }
+
+  .main-content {
+    padding: 0 20px 0 20px;
+
+    .card-content {
+      display: flex;
+      height: 200px;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .collapse {
+      padding-top: 20px;
+    }
+  }
 }
