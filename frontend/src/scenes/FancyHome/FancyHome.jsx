@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
+import './FancyHome.scss';
 import { Breadcrumb, Layout, Menu, Avatar, Typography, theme, Badge, Card, Collapse} from 'antd';
 import { LaptopOutlined, NotificationOutlined, UserOutlined, CaretRightOutlined } from '@ant-design/icons';
+import { Liquid } from '@ant-design/charts';
 
 const { Header, Content, Sider } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const sidebarItems = [{
     key: `key1`,
@@ -44,11 +46,11 @@ const sidebarItems = [{
 }];
 
 const text = "Hello! This is a panel.";
-const getItems = (panelStyle) => [
+const getItems = (panelStyle, liquid) => [
     {
         key: 'collapse1',
         label: 'Light meter - Living room',
-        children: <p>{text}</p>,
+        children: liquid,
         style: panelStyle,
     },
     {
@@ -85,25 +87,28 @@ const FancyHome = () => {
         borderColor: token.colorBorder,
     };
 
+    const configLiquid = {
+        percent: 0.3,
+        style: {
+            outlineBorder: 4,
+            outlineDistance: 8,
+            waveLength: 128,
+        },
+    };
+
     return (
-            <Layout
-                style={{
-                    height: '100vh',
-                }}
-            >
-                <Header
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '0 20px',
-                    }}
-                >
-                    <img src={"/logo.png"} alt="Logo" style={{height: "80%"}}/>
-                    <Title style={{marginLeft: 30}}>IoTide Home</Title>
-                    <Title level={4} style={{marginLeft: 'auto', marginBottom: 25}}>M Ehrlich</Title>
-                    <Badge count={badgeCount}>
-                        <Avatar icon={<UserOutlined />} style={{marginLeft: 15}} onClick={handleAvatarClick}/>
-                    </Badge>
+            <Layout className={"FancyHome"}>
+                <Header className={"header"}>
+                    <div className={"header-container"}>
+                        <img src={"/logo.png"} alt="Logo" style={{height: "80%"}}/>
+                        <Text style={{fontSize: '5vmin'}}>IoTide Home</Text>
+                    </div>
+                    <div className={"header-container"}>
+                        <Text style={{fontSize: '2vmin'}}>M Ehrlich</Text>
+                        <Badge count={badgeCount}>
+                            <Avatar icon={<UserOutlined />} onClick={handleAvatarClick}/>
+                        </Badge>
+                    </div>
                 </Header>
                 <Layout>
                     <Sider
@@ -151,7 +156,11 @@ const FancyHome = () => {
                                     width: '50vp',
                                 }}
                             >
-                                <p>Card content</p>
+                                <div style={{display: "flex", height: 200, alignItems: "center", justifyContent: "space-between"}}>
+                                    <p style={{display: "flex", height: "auto"}}>Card content</p>
+
+                                    <Liquid {...configLiquid} />
+                                </div>
                             </Card>
                             <div style={{height: 30}}/>
                             <Collapse
@@ -161,7 +170,7 @@ const FancyHome = () => {
                                 style={{
                                     background: token.colorBgLayout,
                                 }}
-                                items={getItems(panelStyle)}
+                                items={getItems(panelStyle, <Liquid {...configLiquid} />)}
                             />
                         </Content>
                     </Layout>
