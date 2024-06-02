@@ -26,16 +26,24 @@
 
   .main-content {
     padding: 0 20px 0 20px;
+    display: flex;
+    flex-direction: column;
 
-    .card-content {
-      display: flex;
-      height: 200px;
-      align-items: center;
-      justify-content: space-around;
+    .card {
+      max-width: 1000px;
+
+      .card-content {
+        display: flex;
+        height: 200px;
+        align-items: center;
+        justify-content: space-around;
+      }
     }
 
     .collapse {
+      align-items: center;
       padding-top: 20px;
+      max-width: 1000px;
     }
   }
 }
