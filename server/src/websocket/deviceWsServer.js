@@ -140,7 +140,7 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
                     logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);
                     break;
                 default:
-                    logger.error('Unknown message type:', parsedMessage.type);
+                    logger.error('Unknown message type: '+ parsedMessage.type);
                     wsConnection.send(JSON.stringify({ error: 'Unknown message type' }));
                     return;
             }
