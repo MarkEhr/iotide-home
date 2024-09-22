@@ -2,7 +2,7 @@ import React from 'react';
 import './Landing.scss';
 import Button from "../../../components/Button/Button";
 import {Link} from "react-router-dom";
-import {paths} from "../../../services/routes/notLoggedRoutes";
+import {paths} from "../../../services/routes/mainRoutes";
 import BlurBall from "../../../components/BlurBall/BlurBall";
 const Landing = () => {
 

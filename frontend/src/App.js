@@ -10,8 +10,7 @@ import store from "./services/redux/store";
 import {useSelector} from "react-redux";
 import Splash from "./components/Splash";
 import SecurityManager, {SecurityContext} from "./services/SecurityManager";
-import getAppRoutes from "./services/routes/appRoutes";
-import notLoggedRoutes from "./services/routes/notLoggedRoutes";
+import getMainRoutes from "./services/routes/mainRoutes";
 import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
 import TideToaster from "./components/TideToaster/TideToaster";
 import {notifierRef} from "./services/notifier";
@@ -33,9 +32,7 @@ function App() {
 
     const securityManager=useMemo(()=> me? new SecurityManager(me) : null,[me]);
 
-    const routes= loggedIn && me?
-        getAppRoutes(securityManager)
-        :notLoggedRoutes;
+    const routes= getMainRoutes(loggedIn);
 
     const splash=loading || (loggedIn && !me);
 
