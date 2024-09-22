@@ -56,7 +56,7 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
             return;
         }
         isAlive = false;
-        wsConnection.ping(() => {});  // Send a ping frame
+        wsConnection.ping();  // Send a ping frame
     }, 10000);
 
 
@@ -94,13 +94,13 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
         wsConnection.on("message", (message) => {
             logger.info(`Message received from ${deviceId}: ${message}`);
 
-            // assuming event with the format 
+            // assuming event with the format
             // {
             //     type: 'event',
-            //     data: { 
-            //             type: 'temperature', 
-            //             time: '2021-07-01T12:00:00Z', 
-            //             data: '10' 
+            //     data: {
+            //             type: 'temperature',
+            //             time: '2021-07-01T12:00:00Z',
+            //             data: '10'
             //            }
             // }
 
@@ -136,8 +136,8 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
                         type: parsedMessage.data.type,
                         time: parsedMessage.data.time,
                         data: parsedMessage.data.data
-                    });              
-                    logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);      
+                    });
+                    logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);
                     break;
                 default:
                     logger.error('Unknown message type:', parsedMessage.type);
@@ -152,7 +152,6 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
             };
 
             controlWsServer.to(deviceId).emit('message', broadcastMessage);
-            wsConnection.send(JSON.stringify({message: 'Message received.'}));
         });
 
         wsConnection.on("close", () => {
