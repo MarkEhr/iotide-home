@@ -1,0 +1,21 @@
+.CollapsedCard {
+  display: flex;
+  justify-content: space-between;
+  height: 10vh;
+
+  .small-chart-container {
+    position: relative;
+    height: inherit;
+    width: 480px;
+
+    .small-chart-text {
+      position: absolute;
+      top: -10%;
+      height: inherit;
+      width: inherit;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 7vmin;
+    }
+  }
+}

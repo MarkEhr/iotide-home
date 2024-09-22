@@ -1,8 +1,9 @@
 @import "colors";
 
-html,body{
+html, body, #root {
   font-family: Montserrat-medium, sans-serif;
   font-size: 14px;
+  margin: 0;
 }
 
 b, strong{
@@ -12,4 +13,5 @@ b, strong{
 
 .App{
   color: $text-color;
+  height: 100%;
 }
