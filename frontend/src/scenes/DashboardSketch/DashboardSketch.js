@@ -43,7 +43,7 @@ const DashboardSketch = () => {
             bordered={false}
             //defaultActiveKey={['collapse1']}
             expandIcon={({ isActive }) => <RightOutlined rotate={isActive ? 90 : 0} />}
-            expandIconPosition={"right"}
+            expandIconPosition={"end"}
             className={"collapse"}
             onChange={setActiveKey}
             style={{background:token.colorBgLayout}}
