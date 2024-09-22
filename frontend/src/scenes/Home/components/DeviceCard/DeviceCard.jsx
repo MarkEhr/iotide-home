@@ -7,11 +7,17 @@ const DeviceCard = ({ device, socket }) => {
 
     const api = useContext(ApiContext);
 
+    const getPercentage = ( actual )=>{
+        if(device.type !== 'waterv1' || !actual)
+            return 0;
+
+        const range = device.config.maxValue - device.config.minValue;
+        return Math.round((actual - device.config.minValue) * 100 / range);
+    }
+
     const [running, setRunning] = useState(false);
-
     const [streaming, setStreaming] = useState(false);
-
-    const [percentage, setPercentage] = useState(50);
+    const [percentage, setPercentage] = useState(getPercentage( device?.state?.humidity ));
 
     const getCircleClass = ()=>{
         if(running)

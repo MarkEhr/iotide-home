@@ -129,20 +129,22 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
                         wsConnection.send(JSON.stringify({ error: 'Event message is missing required fields' }));
                         return;
                     }
-                    console.log((new Date()).toISOString())
                     await Event.create({
                         deviceId: deviceId,
                         type: parsedMessage.data.type,
                         time: new Date().toISOString(),
                         data: parsedMessage.data.data
                     });
+
+                    await Device.updateOne({ deviceId }, { state: {[parsedMessage.data.type]: parsedMessage.data.data} });
+
                     logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);
                     break;
                 case 'connection':
                     logger.info('Connection message received from device ' + deviceId);
                     if (parsedMessage.hasOwnProperty('ip')) {
                         // set the device ip in the database
-                        await Device.updateOne({ deviceId: deviceId }, { ip: parsedMessage.ip });
+                        await Device.updateOne({ deviceId }, { ip: parsedMessage.ip });
                     }
                     break;
                 default:

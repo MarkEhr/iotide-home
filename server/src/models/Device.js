@@ -26,6 +26,9 @@ const deviceSchema = new mongoose.Schema({
     ip: {
         type: String,
     },
+    state: {
+        type: Object,
+    }
 }, {
     timestamps: true
 });
