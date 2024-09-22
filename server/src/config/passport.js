@@ -3,7 +3,8 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const HeaderAPIKeyStrategy = require('passport-headerapikey').HeaderAPIKeyStrategy;
 const config = require('./config');
 const User = require('../models/User');  // adjust the path as necessary
-const Device = require('../models/Device');  // adjust the path as necessary
+const Device = require('../models/Device');
+const logger = require('../config/logger');
 
 const options = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -12,10 +13,11 @@ const options = {
 
 const JWTStrategy = new JwtStrategy(options, async (jwtPayload, done) => {
     try {
-        const user = await User.findByPk(jwtPayload.id);
+        const user = await User.findOne({_id: jwtPayload.id});
         if (user) {
             return done(null, user);
         } else {
+            logger.error("User not found with jwt id: " + jwtPayload.id);
             return done(null, false);
         }
     } catch (error) {
@@ -28,7 +30,7 @@ const APIKeyStrategy = new HeaderAPIKeyStrategy(
     false,
     async function(apikey, done) {
         try {
-          const device = await Device.findOne({ where: { apiKey: apikey } });
+          const device = await Device.findOne({ apiKey: apikey });
           if (!device) {
             return done(null, false);
           }

@@ -1,46 +1,40 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/sequelize');  // Path to your database setup file
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-class User extends Model {}
-
-User.init({
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const userSchema = new mongoose.Schema({
     username: {
-        type: DataTypes.STRING,
+        type: String,
         unique: true,
-        allowNull: false
+        required: true
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String,
+        required: false
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    // ... any other fields you want for the User
-}, {
-    sequelize,
-    modelName: 'User',
-    hooks: {
-        beforeCreate: async (user) => {
-            if (user.password) {
-                const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt);
-            }
-        },
-        beforeUpdate: async (user) => {
-            if (user.changed('password')) {
-                const salt = await bcrypt.genSalt(10);
-                user.password = await bcrypt.hash(user.password, salt);
-            }
-        }
+        type: String,
+        required: true
     }
+}, {
+    timestamps: true
 });
+
+userSchema.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
+    next();
+});
+
+userSchema.pre('findOneAndUpdate', async function(next) {
+    if (this._update.password) {
+        const salt = await bcrypt.genSalt(10);
+        this._update.password = await bcrypt.hash(this._update.password, salt);
+    }
+    next();
+});
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

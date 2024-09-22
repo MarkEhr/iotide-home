@@ -6,12 +6,12 @@ const catchAsync = require("../utils/catchAsync");
 const path = require('path');
 
 const listDevices = catchAsync(async (req, res) => {
-    const devices = await Device.findAll();
+    const devices = await Device.find().lean();
 
     const devicesWithStatus = devices.map(device => {
         const isConnected = !!deviceManager.getDevice(device.deviceId);
         return {
-            ...device.toJSON(),  // Convert Sequelize instance to a plain object
+            ...device,
             isConnected
         };
     });
@@ -52,7 +52,6 @@ const updateDevice = catchAsync(async (req, res) => {
         const filePath = path.join(__dirname, '..', '..', '..', 'firmwares', requestedVersion);
         res.status(200).sendFile(filePath);
     }
-    return;
 });
 
 module.exports = {

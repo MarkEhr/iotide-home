@@ -1,49 +1,35 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../db/sequelize');
+const mongoose = require('mongoose');
 
-class Device extends Model {}
-
-Device.init({
-    // Device chip identifier
+const deviceSchema = new mongoose.Schema({
     deviceId: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true,
-        unique: true,
-        validate: {
-            notEmpty: true
-        }
+        type: String,
+        required: true,
+        unique: true
     },
-    // API key for authentication
     apiKey: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            notEmpty: true
-        }
+        type: String,
+        required: true,
+        unique: true
     },
-    // Human-readable name for the device
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        type: String,
+        required: true
     },
-    // Device type
     type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        type: String,
+        required: true
+    },
+    config: {
+        type: Object,
+        required: true
+    },
+    ip: {
+        type: String,
     },
 }, {
-    sequelize,
-    modelName: 'Device',
-    timestamps: true,  // By default Sequelize will add the `createdAt` and `updatedAt` fields
-    paranoid: true     // Enables "soft deletion" with a `deletedAt` field
+    timestamps: true
 });
+
+const Device = mongoose.model('Device', deviceSchema);
 
 module.exports = Device;

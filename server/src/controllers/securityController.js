@@ -13,7 +13,7 @@ const login = catchAsync( async (req, res)=>{
     }
 
     // Find the user
-    const user = await User.findOne({ where: { username } });
+    const user = await User.findOne({ username });
 
     if (!user) {
         logger.info('User not found with username: ' + username);
@@ -28,7 +28,7 @@ const login = catchAsync( async (req, res)=>{
     }
 
     // User matched. Create JWT Payload
-    const payload = { id: user.id, username: user.username };
+    const payload = { id: user._id, username: user.username };
 
     // Sign the token
     jwt.sign(payload, config.jwtSecret, { expiresIn: '15D' }, (err, token) => {

@@ -73,10 +73,8 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
 
     try {
         const device = await Device.findOne({
-            where: {
-                deviceId: deviceId,
-                apiKey: apiKey
-            }
+            deviceId: deviceId,
+            apiKey: apiKey
         });
 
         if (!device) {
@@ -91,7 +89,7 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
 
         deviceManager.addDevice(deviceId, wsConnection);
 
-        wsConnection.on("message", (message) => {
+        wsConnection.on("message", async (message) => {
             logger.info(`Message received from ${deviceId}: ${message}`);
 
             // assuming event with the format
@@ -131,13 +129,21 @@ const connectionHandler = async (wsConnection, connectionRequest, controlWsServe
                         wsConnection.send(JSON.stringify({ error: 'Event message is missing required fields' }));
                         return;
                     }
-                    Event.create({
+                    console.log((new Date()).toISOString())
+                    await Event.create({
                         deviceId: deviceId,
                         type: parsedMessage.data.type,
-                        time: parsedMessage.data.time,
+                        time: new Date().toISOString(),
                         data: parsedMessage.data.data
                     });
                     logger.info(`Stored ${parsedMessage.data.type} event for device ${deviceId}`);
+                    break;
+                case 'connection':
+                    logger.info('Connection message received from device ' + deviceId);
+                    if (parsedMessage.hasOwnProperty('ip')) {
+                        // set the device ip in the database
+                        await Device.updateOne({ deviceId: deviceId }, { ip: parsedMessage.ip });
+                    }
                     break;
                 default:
                     logger.error('Unknown message type: '+ parsedMessage.type);

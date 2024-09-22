@@ -1,45 +1,22 @@
-const { DataTypes, Model } = require('sequelize');
-const sequelize = require('../db/sequelize');
+const mongoose = require('mongoose');
 
-class Event extends Model { }
-
-Event.init({
-    // Auto-incrementing primary key
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        unique: true,
-        validate: {
-            notEmpty: true
-        }
-    },
-    // Event type (humidity, temperature, etc.)
+const eventSchema = new mongoose.Schema({
     type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        type: String,
+        required: true,
     },
     time: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        type: Date,
+        required: true,
     },
     data: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
-    },
+        type: String,
+        required: true,
+    }
 }, {
-    sequelize,
-    modelName: 'Event',
     timestamps: false
 });
+
+const Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;

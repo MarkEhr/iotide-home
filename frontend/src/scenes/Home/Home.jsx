@@ -14,7 +14,8 @@ const Home = () => {
     const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        api.devices.get();
+        api.devices.get()
+            .catch(e => console.error(e));
 
         const socket = io("http://localhost:4000", {
             path: "/ws-control/"
